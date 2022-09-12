@@ -6,7 +6,7 @@ async function getArticles() {
     return await articlesCatch.json();
 }
 
-    // Répartition des données de l'API dans le DOM
+// Répartition des données de l'API dans le DOM
 async function fillSection() {
     const result = await getArticles ()
     .then(function (resultatAPI){
