@@ -159,7 +159,7 @@ function getForm() {
     let form = document.querySelector(".cart__order__form");
 
     //Création des expressions régulières
-    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
+    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_+]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
     let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
     let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
 
@@ -247,11 +247,12 @@ getForm();
 
 //Envoi des informations client au localstorage
 function postForm(){
-    const btn_commander = document.getElementById("order");
+    const btn_commander = document.querySelector("form");
 
     //Ecouter le panier
-    btn_commander.addEventListener("click", (event)=>{
-    
+    btn_commander.addEventListener("submit", (event)=>{
+    event.preventDefault()
+
         //Récupération des coordonnées du formulaire client
         let inputName = document.getElementById('firstName');
         let inputLastName = document.getElementById('lastName');
@@ -261,10 +262,15 @@ function postForm(){
 
         //Construction d'un array depuis le local storage
         let idProducts = [];
-        for (let i = 0; i<produitLocalStorage.length;i++) {
+        if (produitLocalStorage!=null){
+            for (let i = 0; i<produitLocalStorage.length;i++) {
             idProducts.push(produitLocalStorage[i].idProduit);
-        }
+            }
+        }        
         console.log(idProducts);
+        if (idProducts.length===0){
+            alert("Ajouter un produit au panier")
+            return};
 
         const order = {
             contact : {
