@@ -1,5 +1,19 @@
 //Initialisation du local storage
 let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
+let prices = [];
+
+produitLocalStorage.forEach((prod, indx) => {
+	console.log(prod.idProduit)
+	fetch('http://localhost:3000/api/products/' + prod.idProduit)
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(prices.push(data.price))
+			document.querySelectorAll('.cart__item__content__titlePrice')[indx].children[1].innerHTML = data.price + ' € '
+            getTotals()
+		})
+})
+console.log(prices)
+
 console.table(produitLocalStorage);
 const positionEmptyCart = document.querySelector("#cart__items");
 
@@ -53,7 +67,7 @@ for (let produit in produitLocalStorage){
     // Insertion du prix
     let productPrice = document.createElement("p");
     productItemContentTitlePrice.appendChild(productPrice);
-    productPrice.innerHTML = produitLocalStorage[produit].prixProduit + " €";
+    productPrice.innerHTML = '';
 
     // Insertion de l'élément "div"
     let productItemContentSettings = document.createElement("div");
@@ -85,6 +99,7 @@ for (let produit in produitLocalStorage){
         produitLocalStorage[produit].quantiteProduit = event.target.value
         localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
         console.log(event)
+        getTotals();
     })
 
     // Insertion de l'élément "div"
@@ -120,14 +135,13 @@ function getTotals(){
     totalPrice = 0;
 
     for (let i = 0; i < myLength; ++i) {
-        totalPrice += (elemsQtt[i].valueAsNumber * produitLocalStorage[i].prixProduit);
+        totalPrice += (elemsQtt[i].valueAsNumber * prices[i]);
     }
 
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = totalPrice;
     console.log(totalPrice);
 }
-getTotals();
 
 // Suppression d'un produit
 function deleteProduct() {
